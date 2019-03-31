@@ -1,9 +1,9 @@
-# Atom One Dark for Hyper
+# Atom One Dark Vibrancy for Hyper
 
 [Hyper](https://hyper.is) theme based on [the Atom One Dark theme](https://github.com/atom/one-dark-syntax). Forked from @jxnblk's [HyperTerminator](https://github.com/jxnblk/hyperterminator) and modified by @mdo.
 
-![Screenshot at start](https://cloud.githubusercontent.com/assets/98681/16899205/f644411e-4baf-11e6-851a-930070779867.png)
-![Screenshot with tabs](https://cloud.githubusercontent.com/assets/98681/16899206/f644c080-4baf-11e6-890d-fd5c628c7991.png)
+![Screenshot at start](./images/screen.png)
+![Screenshot with tabs](./images/screen-vibrancy.png)
 
 ### Install
 
@@ -12,10 +12,16 @@
   
   ```js
 plugins: [
-  'hyperterm-atom-dark'
+  'hyper-atom-dark-vibrancy'
 ],
 ```
 3. Fully reload Hyper (`Cmd+Shift+R`), and tada!
+
+Add follows line to config for enable the light vibrancy effect:
+
+```js
+enableVibrancy: true
+```
 
 ### License
 

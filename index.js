@@ -1,31 +1,52 @@
 
-const backgroundColor = '#282c34'
-const foregroundColor = '#abb2bf'
-const cursorColor = foregroundColor
-const borderColor = backgroundColor
-
-const colors = {
-  black       : backgroundColor,
-  red         : '#e06c75', // red
-  green       : '#98c379', // green
-  yellow      : '#d19a66', // yellow
-  blue        : '#56b6c2', // blue
-  magenta     : '#c678dd', // pink
-  cyan        : '#56b6c2', // cyan
-  white       : '#d0d0d0', // light gray
-  lightBlack  : '#808080', // medium gray
-  lightRed    : '#e06c75', // red
-  lightGreen  : '#98c379', // green
-  lightYellow : '#d19a66', // yellow
-  lightBlue   : '#56b6c2', // blue
-  lightMagenta: '#c678dd', // pink
-  lightCyan   : '#56b6c2', // cyan
-  colorCubes  : '#ffffff', // white
-  grayscale   : foregroundColor
-}
 
 exports.decorateConfig = config => {
-  return Object.assign({}, config, {
+  const backgroundColor = config.enableVibrancy ? 'rgba(40, 44, 52, 0.7)' : '#282c34';
+  const foregroundColor = '#abb2bf'
+  const cursorColor = config.enableVibrancy ? 'transparent' : foregroundColor;
+  const borderColor = config.enableVibrancy ? 'transparent' : backgroundColor;
+  const tabColor = config.enableVibrancy ? 'rgba(40, 44, 52, 0.23)' : 'rgba(0, 0, 0, 0.19)';
+  const tabBorderColor = config.enableVibrancy ? 'rgba(0, 0, 0, 0.12)' : 'rgba(0, 0, 0, 0.3)';
+  
+  const colors = {
+    black       : backgroundColor,
+    red         : '#e06c75', // red
+    green       : '#98c379', // green
+    yellow      : '#d19a66', // yellow
+    blue        : '#56b6c2', // blue
+    magenta     : '#c678dd', // pink
+    cyan        : '#56b6c2', // cyan
+    white       : '#d0d0d0', // light gray
+    lightBlack  : '#808080', // medium gray
+    lightRed    : '#e06c75', // red
+    lightGreen  : '#98c379', // green
+    lightYellow : '#d19a66', // yellow
+    lightBlue   : '#56b6c2', // blue
+    lightMagenta: '#c678dd', // pink
+    lightCyan   : '#56b6c2', // cyan
+    colorCubes  : '#ffffff', // white
+    grayscale   : foregroundColor
+  }
+  if (process.platform === 'darwin') {
+    tabListStyles = `
+      .tabs_list {
+        margin-left: 0 !important;
+        padding-left: 76px;
+      }
+      .tabs_list::before {
+        content: "";
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 76px;
+        background-color: ${tabColor} !important;
+        border-bottom: 1px solid ${tabBorderColor};
+      }
+    `;
+  }
+  const decoratedConfig = Object.assign({}, config, {
     foregroundColor,
     backgroundColor,
     borderColor,
@@ -47,27 +68,37 @@ exports.decorateConfig = config => {
     `,
     css: `
       ${config.css || ''}
+      .hyper_main {
+        background-color: ${backgroundColor};
+      }
       .header_header {
         top: 0;
         right: 0;
         left: 0;
       }
       .tabs_list {
-        background-color: #21252b !important;
-        border-bottom-color: #181a1f !important;
+        border-bottom-color: ${tabBorderColor} !important;
+      }
+      .tabs_list::before {
+        content: "";
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 76px;
+        background-color: rgba(50, 50, 50, .09) !important;
+        border-bottom: 1px solid ${tabBorderColor};
       }
       .splitpane_divider {
         background-color: rgba(171, 178, 191, 0.15) !important;
       }
+      ${tabListStyles}
       .tab_tab {
         font-weight: 500;
         color: rgba(157, 165, 180, 0.6);
-        border-width: 0 0 0 1px;
-        border-image: linear-gradient(#21252b, #181a1f 1em) 0 0 0 1 stretch;
-        border-style: solid;
-      }
-      .tab_tab:first-of-type {
-        border-width: 0;
+        border-color: ${tabBorderColor} !important;
+        background-color: ${tabColor} !important;
       }
       .tab_tab:hover {
         color: rgba(157, 165, 180, 0.6);
@@ -93,29 +124,7 @@ exports.decorateConfig = config => {
         color: #d7dae0;
       }
       .tab_tab.tab_active {
-        background-color: ${backgroundColor};
-      }
-      .tab_tab.tab_active,
-      .tab_tab.tab_active + .tab_tab {
-        border-image: linear-gradient(transparent, transparent) 0 0 0 1 stretch;
-      }
-      .tab_tab.tab_active::before {
-        content: "";
-        z-index: 1;
-        position: absolute;
-        top: 0;
-        left: -1px;
-        bottom: -1px;
-        right: 0;
-        height: inherit;
-        background-image: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
-        border: 1px solid #181a1f;
-        border-bottom-color: ${backgroundColor};
-        border-top: 0;
-      }
-      .tab_tab.tab_active:last-of-type::before {
-        border-right-width: 0;
+        background-color: transparent !important;
       }
       .tab_tab.tab_active::after {
         opacity: 1;
@@ -164,6 +173,18 @@ exports.decorateConfig = config => {
       .tab_icon::after {
         display: none;
       }
+      .footer_footer {
+        transparent !important;
+      }
+      .footer_footer .group_overflow {
+        font-size: 14px;
+      }
     `
   })
+  exports.onWindow = browserWindow => {
+    if (config.enableVibrancy === true) {
+      browserWindow.setVibrancy('dark');
+    }
+  };
+  return decoratedConfig;
 }
