@@ -174,7 +174,7 @@ exports.decorateConfig = config => {
         display: none;
       }
       .footer_footer {
-        transparent !important;
+        background-color: transparent !important;
       }
       .footer_footer .group_overflow {
         font-size: 14px;
